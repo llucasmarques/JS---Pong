@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+    </head>
+    
+    <center>
+        <body onload="iniciar()">
+            <canvas id="canvas" width="320" height="480" style="border: 1px solid black;"></canvas>
+        
+        </body>
+    
+    <script>
+    
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        
+        
+        var posxbola = canvas.width/2;
+        var posybola = canvas.height/2;
+        var raio = 10;
+        var vxbola = -4;
+        var vybola = -4;
+        
+        var posxrebatedor = canvas.width/2;
+        var posyrebatedor = 420;
+        var lrebatedor = 80;
+        var arebatedor = 20;
+        
+        function iniciar(){
+            setInterval(function(){atualizar();}, 1000/30);
+        }
+        function atualizar(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            desenhar();
+            processar();
+        }
+        function desenhar(){
+            ctx.beginPath();
+            ctx.arc(posxbola,posybola,raio,0,2* Math.PI);
+            ctx.fillStyle = "green";
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.rect(posxrebatedor,posyrebatedor,lrebatedor,arebatedor);
+            ctx.fillStyle = "purple";
+            ctx.fill();
+        }
+        function processar(){
+            if(posxrebatedor > canvas.width - lrebatedor){
+               posxrebatedor = canvas.width - lrebatedor;
+            }
+            if(posxrebatedor < 0 + lrebatedor/10){
+                posxrebatedor = 0 ;
+            }
+            
+            posxbola +=vxbola;
+            posybola += vybola;
+            
+            if(posxbola > canvas.width - raio){
+               posxbola = canvas.width - raio;
+               vxbola *= -1;
+            }
+            if(posxbola < 0 + raio){
+               posxbola = 0 + raio;
+               vxbola *= -1;
+            }
+            if(posybola > canvas.height - raio){
+               posybola = canvas.height - raio;
+               vybola *= -1;
+            }
+            if(posybola < 0 + raio){
+               posybola = 0 + raio;
+               vybola *= -1;
+            }
+            
+            if(colisao()==true){
+                vxbola *= -1;
+                vybola *= -1;
+            }
+        }
+        function colisao(){
+            var x = posxbola - Math.max(posxrebatedor, Math.min(posxbola, posxrebatedor + lrebatedor));
+            var y = posybola - Math.max(posyrebatedor, Math.min(posybola, posyrebatedor + arebatedor));
+            return (x*x + y*y) < (raio*raio);
+        }
+        
+        window.addEventListener('keydown', detectaKeyDown, true);
+        function detectaKeyDown(e){
+            if(e.keyCode == 37){
+               posxrebatedor -= 10;
+            }
+            if(e.keyCode == 39){
+                posxrebatedor += 10;
+            }
+        }
+        
+        
+    </script>
+    </center>
+
+
+</html>
